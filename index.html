@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Measure your typing speed and accuracy. Pick a difficulty, race the clock and beat your personal best.">
+  <meta name="theme-color" content="#121212">
+
+  <title>Typing Speed Test</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link rel="preload" href="./assets/fonts/Sora/static/Sora-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="./css/tokens.css">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <script type="module" src="./js/main.js" defer></script>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header container">
+      <a class="brand" href="./" aria-label="Typing Speed Test, home">
+        <img class="brand__logo" src="./assets/images/logo-small.svg" alt="" width="32" height="32">
+        <div class="brand__text">
+          <h1 class="brand__title">Typing Speed Test</h1>
+          <p class="brand__tagline" id="tagline">Type as fast as you can in 60 seconds</p>
+        </div>
+      </a>
+
+      <p class="personal-best">
+        <img src="./assets/images/icon-personal-best.svg" alt="" width="21" height="18">
+        <span class="personal-best__label">
+          <span class="personal-best__label-long">Personal best:</span>
+          <span class="personal-best__label-short">Best:</span>
+        </span>
+        <span class="personal-best__value">
+          <span id="personal-best-value">&ndash;</span>
+          <span id="personal-best-unit" hidden>WPM</span>
+        </span>
+      </p>
+    </header>
+
+    <main class="container">
+      <section id="test-view" class="test" data-state="idle" aria-label="Typing test">
+        <div class="toolbar">
+          <dl class="stats" aria-label="Live statistics">
+            <div class="stat">
+              <dt>WPM:</dt>
+              <dd id="stat-wpm">0</dd>
+            </div>
+            <div class="stat">
+              <dt>Accuracy:</dt>
+              <dd id="stat-accuracy" data-tone="neutral">100%</dd>
+            </div>
+            <div class="stat">
+              <dt>Time:</dt>
+              <dd id="stat-time" data-tone="neutral">1:00</dd>
+            </div>
+          </dl>
+
+          <div class="settings">
+            <div class="select" data-select>
+              <span class="select__label" id="difficulty-label">Difficulty:</span>
+              <button class="select__trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="difficulty-options" aria-describedby="difficulty-label"></button>
+              <div class="select__options" id="difficulty-options" role="radiogroup" aria-labelledby="difficulty-label">
+                <label class="option"><input type="radio" name="difficulty" value="easy"><span>Easy</span></label>
+                <label class="option"><input type="radio" name="difficulty" value="medium"><span>Medium</span></label>
+                <label class="option"><input type="radio" name="difficulty" value="hard"><span>Hard</span></label>
+              </div>
+            </div>
+
+            <div class="select" data-select>
+              <span class="select__label" id="mode-label">Mode:</span>
+              <button class="select__trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="mode-options" aria-describedby="mode-label"></button>
+              <div class="select__options" id="mode-options" role="radiogroup" aria-labelledby="mode-label">
+                <label class="option"><input type="radio" name="mode" value="timed"><span>Timed (60s)</span></label>
+                <label class="option"><input type="radio" name="mode" value="passage"><span>Passage</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arena">
+          <p class="passage" id="passage" aria-label="Passage to type"></p>
+
+          <div class="arena__overlay" id="overlay">
+            <button class="button button--primary" id="start-button" type="button">Start Typing Test</button>
+            <p class="arena__hint">Or click the text and start typing</p>
+          </div>
+
+          <textarea class="capture" id="typing-input" aria-label="Type the passage here" aria-describedby="passage"
+            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" rows="1" tabindex="-1"></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="button button--secondary" id="restart-button" type="button">
+            Restart Test
+            <img src="./assets/images/icon-restart.svg" alt="" width="20" height="20">
+          </button>
+        </div>
+      </section>
+
+      <section id="results-view" class="results" data-kind="complete" aria-labelledby="results-title" hidden>
+        <img class="results__star results__star--red" src="./assets/images/pattern-star-2.svg" alt="" width="32" height="32">
+        <img class="results__star results__star--yellow" src="./assets/images/pattern-star-1.svg" alt="" width="74" height="74">
+        <div class="results__confetti" aria-hidden="true"></div>
+
+        <img class="results__icon" id="results-icon" src="./assets/images/icon-completed.svg" alt="" width="80" height="80">
+        <h2 class="results__title" id="results-title" tabindex="-1">Test Complete!</h2>
+        <p class="results__message" id="results-message" aria-live="polite"></p>
+
+        <dl class="results__stats">
+          <div class="result-card">
+            <dt>WPM:</dt>
+            <dd id="result-wpm">0</dd>
+          </div>
+          <div class="result-card">
+            <dt>Accuracy:</dt>
+            <dd id="result-accuracy" data-tone="neutral">100%</dd>
+          </div>
+          <div class="result-card">
+            <dt>Characters</dt>
+            <dd><span class="tone-good" id="result-correct">0</span><span class="result-card__sep">/</span><span class="tone-bad" id="result-incorrect">0</span></dd>
+          </div>
+        </dl>
+
+        <button class="button button--light" id="again-button" type="button">
+          <span id="again-label">Go Again</span>
+          <img src="./assets/images/icon-restart.svg" alt="" width="20" height="20">
+        </button>
+      </section>
+    </main>
+
+    <footer class="site-footer container">
+      <p>
+        Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank" rel="noreferrer">Frontend Mentor</a>
+        &middot; Coded by <a href="https://github.com/Olebraende" target="_blank" rel="noreferrer">Olebraende</a>
+        &middot; <a href="https://github.com/Olebraende/typing-speed-test" target="_blank" rel="noreferrer">GitHub</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

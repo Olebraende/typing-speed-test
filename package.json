@@ -1,0 +1,12 @@
+{
+  "name": "typing-speed-test",
+  "version": "1.0.0",
+  "description": "A typing speed test that measures words per minute and accuracy.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "python3 -m http.server 5173",
+    "test": "node --test tests/*.test.js"
+  }
+}
